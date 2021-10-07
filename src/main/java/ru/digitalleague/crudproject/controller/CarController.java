@@ -18,14 +18,15 @@ public class CarController {
     CarRepository carRepository;
 
     @PostMapping("/car")
-    public ResponseEntity<CarModel> insert(@RequestParam String model) {
-        log.info("Received message from postman: POST request to insert car model: " + model);
+    public ResponseEntity<CarModel> insert(@RequestBody CarModel carModel) {
 
-        CarModel carModel = new CarModel(model);
+        CarModel newCarModel = new CarModel(carModel.getModel());
+
+        log.info("Received message from postman: POST request to insert car model: " + newCarModel);
 
         try {
-            carRepository.save(carModel);
-            return new ResponseEntity<>(carModel, HttpStatus.CREATED);
+            carRepository.save(newCarModel);
+            return new ResponseEntity<>(newCarModel, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -41,15 +42,15 @@ public class CarController {
     }
 
     @PutMapping("/car")
-    public ResponseEntity<CarModel> updateById(@RequestParam Long id, @RequestParam String model) {
+    public ResponseEntity<CarModel> updateById(@RequestParam Long id, @RequestBody CarModel carModel) {
         log.info("Received message from postman: PUT request to update car model with ID: " + id);
 
-        Optional<CarModel> carModel = carRepository.findById(id);
+        Optional<CarModel> newCarModel = carRepository.findById(id);
 
-        if (carModel.isPresent()) {
-            CarModel newCarModel = carModel.get();
-            newCarModel.setModel(model);
-            return new ResponseEntity<>(carRepository.save(newCarModel), HttpStatus.OK);
+        if (newCarModel.isPresent()) {
+            CarModel updCarModel = newCarModel.get();
+            updCarModel.setModel(carModel.getModel());
+            return new ResponseEntity<>(carRepository.save(updCarModel), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

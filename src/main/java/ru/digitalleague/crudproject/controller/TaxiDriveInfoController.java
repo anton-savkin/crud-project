@@ -17,15 +17,33 @@ public class TaxiDriveInfoController {
     @Autowired
     TaxiDriveInfoRepository taxiDriveInfoRepository;
 
-    @PostMapping("/taxi-drive-info")
-    public ResponseEntity<TaxiDriveInfoModel> insert(@RequestParam String lastName, @RequestParam String firstName, @RequestParam int level, @RequestParam String carModel) {
-        TaxiDriveInfoModel taxiDriveInfoModel = new TaxiDriveInfoModel(lastName, firstName, level, carModel);
+//    @PostMapping("/taxi-drive-info")
+//    public ResponseEntity<TaxiDriveInfoModel> insert(@RequestParam String lastName, @RequestParam String firstName, @RequestParam int level, @RequestParam String carModel) {
+//        TaxiDriveInfoModel taxiDriveInfoModel = new TaxiDriveInfoModel(lastName, firstName, level, carModel);
+//
+//        log.info("Received message from postman: POST request to insert taxi drive info model: " + taxiDriveInfoModel);
+//
+//        try {
+//            taxiDriveInfoRepository.save(taxiDriveInfoModel);
+//            return new ResponseEntity<>(taxiDriveInfoModel, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
-        log.info("Received message from postman: POST request to insert taxi drive info model: " + taxiDriveInfoModel);
+    @PostMapping("/taxi-drive-info")
+    public ResponseEntity<TaxiDriveInfoModel> insert(@RequestBody TaxiDriveInfoModel taxiDriveInfoModel) {
+        TaxiDriveInfoModel newTaxiDriveInfoModel = new TaxiDriveInfoModel(
+                taxiDriveInfoModel.getLastName(),
+                taxiDriveInfoModel.getFirstName(),
+                taxiDriveInfoModel.getLevel(),
+                taxiDriveInfoModel.getCarModel());
+
+        log.info("Received message from postman: POST request to insert taxi drive info model: " + newTaxiDriveInfoModel);
 
         try {
-            taxiDriveInfoRepository.save(taxiDriveInfoModel);
-            return new ResponseEntity<>(taxiDriveInfoModel, HttpStatus.CREATED);
+            taxiDriveInfoRepository.save(newTaxiDriveInfoModel);
+            return new ResponseEntity<>(newTaxiDriveInfoModel, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -58,7 +76,7 @@ public class TaxiDriveInfoController {
             }
 
             if (taxiDriveInfoModel.getLevel() != 0) {
-                newTaxiDriveInfoModel.setLastName(taxiDriveInfoModel.getLastName());
+                newTaxiDriveInfoModel.setLevel(taxiDriveInfoModel.getLevel());
             }
 
             if (taxiDriveInfoModel.getCarModel() != null && !taxiDriveInfoModel.getCarModel().isEmpty()) {
